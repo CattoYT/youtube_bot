@@ -1,0 +1,40 @@
+use serenity::async_trait;
+use serenity::model::channel::Message;
+use serenity::prelude::*;
+use songbird::SerenityInit;
+struct Handler;
+
+mod slash_commands;
+
+#[async_trait]
+impl EventHandler for Handler {
+    async fn message(&self, ctx: Context, msg: Message) {
+        if msg.content == "!ping" {
+            if let Err(why) = msg.channel_id.say(&ctx.http, "Pong!").await {
+                println!("Error sending message: {why:?}");
+            }
+        }
+    }
+}
+
+#[tokio::main]
+async fn main() {
+
+    let token =
+        "REMOVED_TOKEN".to_string();
+
+        let intents = GatewayIntents::all();
+
+
+        let mut client = Client::builder(&token, intents)
+        .event_handler(Handler)
+        .register_songbird()
+        .framework(slash_commands::create_framework().await.unwrap())
+        .await
+        .expect("Err creating client");
+
+    // Start listening for events by starting a single shard
+    if let Err(why) = client.start().await {
+        println!("Client error: {why:?}");
+    }
+}

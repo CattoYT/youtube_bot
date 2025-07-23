@@ -1,0 +1,46 @@
+use poise;
+use std::{path::PathBuf};
+
+use tokio::{pin, sync::Mutex};
+use std::sync::Arc;
+use yt_dlp::Youtube;
+
+type Error = Box<dyn std::error::Error + Send + Sync>;
+type Context<'a> = poise::Context<'a, Data, Error>;
+
+mod ping;
+mod play;
+
+pub struct Data {
+    youtube: Arc<Mutex<Youtube>>,
+    output_directory: PathBuf,
+}
+
+pub async fn create_framework() -> Result<poise::Framework<Data, Error>, Error> {
+    let mut commands = vec![];
+    commands.push(ping::ping());
+    commands.push(play::play());
+
+    let executables_dir = PathBuf::from("libs");
+    let output_dir = PathBuf::from("output");
+    
+    let youtube = Youtube::with_new_binaries(executables_dir, PathBuf::from("output")).await?;
+    let framework = poise::Framework::builder()
+        .options(poise::FrameworkOptions {
+            commands: commands,
+            ..Default::default()
+        })
+        
+        .setup(|ctx, _ready, framework| {
+
+            Box::pin(async move {
+                poise::builtins::register_globally(ctx, &framework.options().commands).await?;
+                let data = Data{youtube: Arc::new(Mutex::new(youtube)), output_directory: output_dir};
+                Ok(data)
+            })
+        })
+        .build();
+    
+    Ok(framework)
+
+}

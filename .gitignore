@@ -1,0 +1,6 @@
+/target
+Cargo.lock
+NUL*
+libs/*
+output/*
+youtube_bot.exe
