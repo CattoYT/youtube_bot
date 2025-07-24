@@ -51,7 +51,7 @@ pub async fn play(ctx: Context<'_>, #[description = "Url to video"] url: Option<
                 .into();
             println!("should play now");
             
-            handle.lock().await.play_input(input.clone().into());
+            handle.lock().await.play_input(input.clone().into()).set_volume(0.4);
             println!("should played");
 
         },
