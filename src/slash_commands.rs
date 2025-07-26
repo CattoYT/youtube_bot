@@ -16,7 +16,6 @@ mod register;
 
 pub struct Data {
     youtube: Arc<Mutex<Youtube>>,
-    output_directory: PathBuf,
 }
 
 pub async fn create_framework() -> Result<poise::Framework<Data, Error>, Error> {
@@ -32,18 +31,21 @@ pub async fn create_framework() -> Result<poise::Framework<Data, Error>, Error> 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
             commands: commands,
-            prefix_options: poise::PrefixFrameworkOptions {
-            prefix: Some("~".into()),
-            ..Default::default()
-        },
+
             ..Default::default()
         })
         
         .setup(|ctx, _ready, framework| {
 
             Box::pin(async move {
-                poise::builtins::register_globally(ctx, &framework.options().commands).await?;
-                let data = Data{youtube: Arc::new(Mutex::new(youtube)), output_directory: output_dir};
+                println!("FUCK YOU");
+                if let Err(e) = poise::builtins::register_globally(ctx, &framework.options().commands).await {
+                    println!("{e}")
+                }
+
+
+
+                let data = Data{youtube: Arc::new(Mutex::new(youtube))};
                 Ok(data)
             })
         })

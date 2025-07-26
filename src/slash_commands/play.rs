@@ -16,12 +16,12 @@ pub async fn play(ctx: Context<'_>, #[description = "Url to video"] url: Option<
     let video_url = match url {
         Some(url) => url,
         None => {
-            ctx.say("Please provide a URL to play a video.").await?;
+            ctx.reply("Please provide a URL to play a video.").await?;
             return Ok(());
         }
     };
 
-    ctx.say(format!("Playing video: {}", video_url)).await?;
+    ctx.reply(format!("Playing video: {}", video_url)).await?;
 
 
             
@@ -30,12 +30,12 @@ pub async fn play(ctx: Context<'_>, #[description = "Url to video"] url: Option<
     let song_title = match youtube.fetch_video_infos(video_url.clone()).await {
         Ok(video) => video.title,
         Err(e) => {
-            ctx.say("Please provide a valid URL to play a video.").await?;
+            ctx.reply("Please provide a valid URL to play a video.").await?;
             return Ok(())
         }
     };
 
-    let audio_stream = youtube.download_audio_stream_with_quality(video_url.to_string(), song_title + ".mp3", AudioQuality::High, AudioCodecPreference::MP3).await.unwrap();
+    let audio_stream = youtube.download_audio_stream_with_quality(video_url.to_string(), song_title.trim().to_owned() + ".mp3", AudioQuality::High, AudioCodecPreference::MP3).await.unwrap();
     
     let manager = songbird::get(&ctx.serenity_context()).await.expect("d");
     let voice_channel_id = ctx.guild().unwrap().voice_states.get(&ctx.author().id).and_then(|vc| vc.channel_id);
@@ -49,10 +49,9 @@ pub async fn play(ctx: Context<'_>, #[description = "Url to video"] url: Option<
         Ok(handle) => {
             let input: File<PathBuf> = File::new(audio_stream)
                 .into();
-            println!("should play now");
             
-            handle.lock().await.play_input(input.clone().into()).set_volume(0.4);
-            println!("should played");
+            handle.lock().await.play_input(input.clone().into()).set_volume(0.2);
+
 
         },
         Err(e) => {
