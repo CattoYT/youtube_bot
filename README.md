@@ -14,8 +14,12 @@ Ok actually, this bot was my attempt to get comfortable with Rust and Serenity. 
 
 ## Installation
 
-Run these cmds 
+### Binary   
+See releases tab
 
+###From Source:
+
+Run these cmds 
 ```
 git clone https://github.com/CattoYT/youtube_bot
 cd youtube_bot
