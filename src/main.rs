@@ -1,3 +1,5 @@
+use std::fs;
+
 use serenity::async_trait;
 use serenity::model::channel::Message;
 use serenity::prelude::*;
@@ -21,7 +23,10 @@ impl EventHandler for Handler {
 async fn main() {
 
     let token =
-        "REMOVED_TOKEN".to_string();
+        fs::read_to_string("token.txt")
+            .expect("Failed to read token file")
+            .trim()
+            .to_string();
 
         let intents = GatewayIntents::all();
 
