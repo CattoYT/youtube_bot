@@ -28,6 +28,13 @@ async fn main() {
             .trim()
             .to_string();
 
+    if token.is_empty() {
+        println!("Token file is empty. Please provide a valid token.");
+        
+        std::io::stdin().read_line(&mut String::new()).unwrap();
+        std::process::exit(1);
+    }
+
         let intents = GatewayIntents::all();
 
 
