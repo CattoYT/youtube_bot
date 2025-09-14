@@ -1,11 +1,11 @@
 use poise;
 use std::{collections::HashMap, path::PathBuf};
 
-use serenity::{cache, gateway, model::id::GuildId};
+use serenity::{model::id::GuildId};
 use songbird::tracks::TrackHandle;
 use std::sync::Arc;
 use tokio::sync::Mutex;
-use yt_dlp::{fetcher::deps::youtube, Youtube};
+use yt_dlp::{Youtube};
 
 type Error = Box<dyn std::error::Error + Send + Sync>;
 type Context<'a> = poise::Context<'a, Data, Error>;
@@ -32,7 +32,7 @@ pub async fn create_framework() -> Result<poise::Framework<Data, Error>, Error> 
     let mut youtube = Youtube::with_new_binaries(executables_dir, PathBuf::from("output")).await?;
     youtube.with_args(vec!["--cookies".to_string(), "cookies.txt".to_string()]);
     if let Some(cache) = &youtube.cache {
-        cache.clean();
+        let _ = cache.clean();
     }
 
 

@@ -16,7 +16,7 @@ pub async fn play(
     let video_url = match url {
         Some(url) => url,
         None => {
-            ctx.reply("Please provide a URL to play a video.").await?;
+            ctx.reply("Please provide a URL to play a video").await?;
             return Ok(());
         }
     };
@@ -32,9 +32,10 @@ pub async fn play(
     let video_info = match youtube.fetch_video_infos(video_url.clone()).await {
         Ok(video) => video,
         Err(e) => {
-            ctx.reply("Please provide a valid URL to play a video.")
+            ctx.reply("Please provide a valid URL to play a video. If a valid URL was supplied, please see the console!")
                 .await?;
             println!("{e}");
+            
             return Ok(());
         }
     };
