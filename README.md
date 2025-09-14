@@ -14,6 +14,11 @@ A hosted version of this bot can be invited to your server [here](https://discor
 - Ad-free
 - 'Fast'
 
+## Command list
+- /play <url>
+- /stop
+- /ping
+ 
 ## Installation
 
 ### Binary   
