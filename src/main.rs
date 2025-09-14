@@ -1,4 +1,5 @@
 use std::fs;
+use std::time::Duration;
 
 use serenity::async_trait;
 use serenity::model::channel::Message;
@@ -49,4 +50,6 @@ async fn main() {
     if let Err(why) = client.start().await {
         println!("Client error: {why:?}");
     }
+
+    tokio::spawn(timeout(Duration::from_days(1), task_one()));
 }

@@ -31,9 +31,10 @@ pub async fn play(
     let youtube = &ctx.data().youtube.lock().await;
     let video_info = match youtube.fetch_video_infos(video_url.clone()).await {
         Ok(video) => video,
-        Err(_) => {
+        Err(e) => {
             ctx.reply("Please provide a valid URL to play a video.")
                 .await?;
+            println!("{e}");
             return Ok(());
         }
     };
@@ -50,6 +51,8 @@ pub async fn play(
         .ephemeral(true);
 
     ctx.send(reply).await?;
+
+    
 
     let download_stream = youtube
         .download_audio_stream_with_quality(
@@ -77,7 +80,7 @@ pub async fn play(
                 .unwrap()
         }
     };
-
+    
     let guild_id = ctx.guild_id().expect("guild_only");
     {
         let map = ctx.data().active_voice.lock().await;
@@ -87,6 +90,8 @@ pub async fn play(
             return Ok(());
         }
     }
+
+    
 
     let manager = songbird::get(&ctx.serenity_context())
         .await
